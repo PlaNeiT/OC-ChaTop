@@ -1,60 +1,44 @@
 package com.openclassrooms.OC_ChaTop.controllers;
 
 import com.openclassrooms.OC_ChaTop.models.User;
-import com.openclassrooms.OC_ChaTop.repositories.UserRepository;
-import com.openclassrooms.OC_ChaTop.services.JwtService;
+import com.openclassrooms.OC_ChaTop.services.AuthService;
+import com.openclassrooms.OC_ChaTop.services.UserService;
+import com.openclassrooms.OC_ChaTop.dtos.UserRequest;
+import com.openclassrooms.OC_ChaTop.dtos.UserResponse;
+import com.openclassrooms.OC_ChaTop.dtos.AuthResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api")
 public class AuthController {
-
     @Autowired
-    private JwtService jwtService;
-
+    private UserService userService;
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private AuthService authService;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    // Route to register a new user
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-        return ResponseEntity.ok("User registered successfully");
+    @PostMapping("/auth/register")
+    public AuthResponse register(@RequestBody UserRequest userRequest) {
+        userService.createUser(userRequest);
+        return authService.authenticateUser(userRequest);
     }
 
-    // Route to login a user and return a JWT token
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody User user) {
-        User dbUser = userRepository.findByEmail(user.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    @PostMapping("/auth/login")
+    public AuthResponse authenticate(@RequestBody UserRequest userRequest) {
+        return authService.authenticateUser(userRequest);
+    }
 
-        if (passwordEncoder.matches(user.getPassword(), dbUser.getPassword())) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(dbUser.getEmail());
-            String token = jwtService.generateToken(userDetails);
-            return ResponseEntity.ok(token);
+    @GetMapping("/auth/me")
+    public UserResponse authenticatedUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        try {
+            User user = (User) authentication.getPrincipal();
+            return new UserResponse(user.getId(), user.getName(), user.getEmail(), user.getCreatedAt(), user.getUpdatedAt());
+        } catch (Exception e) {
+            throw new RuntimeException("User not found");
         }
-
-        return ResponseEntity.status(401).body("Invalid credentials");
-    }
-
-    // Route to return the current logged-in user details
-    @GetMapping("/me")
-    public ResponseEntity<?> getUserDetails(@RequestHeader("Authorization") String token) {
-        String jwt = token.substring(7); // remove "Bearer " prefix
-        String username = jwtService.extractUsername(jwt);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        return ResponseEntity.ok(userDetails);
     }
 }

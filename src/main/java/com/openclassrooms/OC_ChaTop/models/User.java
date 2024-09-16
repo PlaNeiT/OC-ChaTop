@@ -16,6 +16,8 @@ import java.util.List;
 public class User {
 
     @Id
+    @Getter
+    @Setter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -33,10 +35,14 @@ public class User {
     private String password;
 
     @CreatedDate
+    @Setter
+    @Getter
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
+    @Getter
+    @Setter
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
