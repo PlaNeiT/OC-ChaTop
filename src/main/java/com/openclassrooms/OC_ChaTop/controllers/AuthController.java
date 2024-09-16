@@ -25,6 +25,7 @@ public class AuthController {
         return authService.authenticateUser(userRequest);
     }
 
+
     @PostMapping("/auth/login")
     public AuthResponse authenticate(@RequestBody UserRequest userRequest) {
         return authService.authenticateUser(userRequest);
@@ -34,11 +35,10 @@ public class AuthController {
     public UserResponse authenticatedUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        try {
-            User user = (User) authentication.getPrincipal();
-            return new UserResponse(user.getId(), user.getName(), user.getEmail(), user.getCreatedAt(), user.getUpdatedAt());
-        } catch (Exception e) {
+        if (authentication == null || !(authentication.getPrincipal() instanceof User user)) {
             throw new RuntimeException("User not found");
         }
+
+        return new UserResponse(user.getId(), user.getName(), user.getEmail(), user.getCreatedAt(), user.getUpdatedAt());
     }
 }

@@ -20,6 +20,7 @@ public class RentalController {
     @Autowired
     private RentalService rentalService;
 
+    // todo: add image and all. Get works but not create
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping(value = "/rentals", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public RentalResponse createRental( @ModelAttribute RentalRequest rentalRequest) {
