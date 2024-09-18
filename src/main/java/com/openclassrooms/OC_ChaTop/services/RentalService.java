@@ -29,6 +29,9 @@ public class RentalService {
     @Autowired
     private RentalMapper rentalMapper;
 
+    @Autowired
+    private PictureService pictureService;
+
     public RentalResponse createRental(RentalRequest rentalRequest) {
         Optional<Rental> rentalInDB = rentalRepository.findByName(rentalRequest.getName());
         if (rentalInDB.isPresent()){
@@ -52,7 +55,10 @@ public class RentalService {
         rental.setDescription(rentalRequest.getDescription());
         rental.setCreatedAt(LocalDateTime.now());
         rental.setUpdatedAt(LocalDateTime.now());
-
+        if (!rentalRequest.getPicture().isEmpty()) {
+            String imageUrl = pictureService.uploadFile(rentalRequest.getPicture());
+            rental.setPicture(imageUrl);
+        }
         rentalRepository.save(rental);
 
         return new RentalResponse(rental.getId(), rental.getName(), rental.getSurface(), rental.getPrice(), rental.getPicture(), rental.getDescription(), rental.getOwner().getId(), rental.getCreatedAt(), rental.getUpdatedAt());
