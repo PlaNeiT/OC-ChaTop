@@ -24,7 +24,7 @@ public class PictureService {
         String bucketName = "p3-oc-chatop-bucket";
         s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
         fileObj.delete();
-        return s3Client.getUrl(bucketName, fileName).toString();  // Retourne l'URL de l'image
+        return s3Client.getUrl(bucketName, fileName).toString();
     }
 
     private File convertMultiPartFileToFile(MultipartFile file) {

@@ -128,6 +128,11 @@
 			<artifactId>aws-java-sdk-s3</artifactId>
 			<version>1.12.504</version>
 		</dependency>
+		<dependency>
+			<groupId>com.amazon.ion</groupId>
+			<artifactId>ion-java</artifactId>
+			<version>1.11.9</version>
+		</dependency>
 
 		<dependency>
 			<groupId>com.amazonaws</groupId>
@@ -139,6 +144,23 @@
 			<artifactId>jaxb-api</artifactId>
 			<version>2.3.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.6.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>6.1.13</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
+			<version>1.7.0</version>
+		</dependency>
+
+
 
 	</dependencies>
 
