@@ -29,7 +29,6 @@ public class MessagesService {
     @Autowired
     private RentalRepository rentalRepository;
 
-    // TODO: FIX MESSAGE BECAUSE THEY DONT APPEAR IN THE DATABASE
     /**
      * Creates a new message associated with a user and a rental.
      *
