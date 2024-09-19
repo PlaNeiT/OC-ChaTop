@@ -10,33 +10,64 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+/**
+ * Configuration class for application security settings and beans.
+ */
 @Configuration
 public class AppConfig {
+
     private final UserRepository userRepository;
 
+    /**
+     * Constructor injection of UserRepository.
+     *
+     * @param userRepository the repository used to fetch user data
+     */
     public AppConfig(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Bean for UserDetailsService that loads user-specific data.
+     *
+     * @return UserDetailsService that fetches user details from the repository
+     */
     @Bean
-    UserDetailsService userDetailsService() {
+    public UserDetailsService userDetailsService() {
         return username -> userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 
 
+    /**
+     * Bean for password encoding using BCrypt.
+     *
+     * @return BCryptPasswordEncoder for encoding passwords
+     */
     @Bean
-    BCryptPasswordEncoder passwordEncoder() {
+    public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Bean for AuthenticationManager to handle authentication.
+     *
+     * @param config AuthenticationConfiguration to configure the manager
+     * @return AuthenticationManager used for handling authentication
+     * @throws Exception if there is an issue with the configuration
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
+    /**
+     * Bean for AuthenticationProvider to authenticate users.
+     *
+     * @return DaoAuthenticationProvider that uses the user details service and password encoder
+     */
     @Bean
-    AuthenticationProvider authenticationProvider() {
+    public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService());
         authProvider.setPasswordEncoder(passwordEncoder());

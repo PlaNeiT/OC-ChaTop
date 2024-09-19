@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+/**
+ * Controller for managing user-related operations, such as retrieving user information.
+ */
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -20,16 +23,23 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-
+    /**
+     * Fetches information about a user by their ID.
+     *
+     * @param id the ID of the user to retrieve
+     * @return a response entity containing the user details if found, or a 404 status if not found
+     */
     @Operation(summary = "Get user by ID", description = "Fetches information about a user by their ID.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User found", content = @Content(schema = @Schema(implementation = UserResponse.class))),
+            @ApiResponse(responseCode = "200", description = "User found",
+                    content = @Content(schema = @Schema(implementation = UserResponse.class))),
             @ApiResponse(responseCode = "404", description = "User not found")
-    })    @GetMapping("/{id}")
+    })
+    @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         Optional<UserResponse> user = userService.getUserById(id);
-        return user.<ResponseEntity<?>>map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-
-
+        return user
+                .<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
