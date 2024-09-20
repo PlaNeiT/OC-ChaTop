@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +35,8 @@ public class RentalController {
      * @param rentalRequest the details of the rental to create
      * @return the created rental details
      */
-    @Operation(summary = "Create a new rental", description = "Creates a new rental with the provided details.")
+    @Operation(summary = "Create a new rental", description = "Creates a new rental with the provided details.",
+            security = { @SecurityRequirement(name = "Bearer Authentication") })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Rental created successfully",
                     content = @Content(schema = @Schema(implementation = RentalResponse.class)))
@@ -49,7 +51,8 @@ public class RentalController {
      *
      * @return a map containing a list of all rentals
      */
-    @Operation(summary = "Get all rentals", description = "Retrieves all the rentals available.")
+    @Operation(summary = "Get all rentals", description = "Retrieves all the rentals available.",
+            security = { @SecurityRequirement(name = "Bearer Authentication") })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Rentals retrieved successfully",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = RentalResponse.class))))
@@ -68,7 +71,8 @@ public class RentalController {
      * @param id the ID of the rental to retrieve
      * @return the rental details
      */
-    @Operation(summary = "Get rental by ID", description = "Fetches rental information for a specific rental by its ID.")
+    @Operation(summary = "Get rental by ID", description = "Fetches rental information for a specific rental by its ID.",
+            security = { @SecurityRequirement(name = "Bearer Authentication") })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Rental found",
                     content = @Content(schema = @Schema(implementation = RentalResponse.class))),
@@ -79,13 +83,14 @@ public class RentalController {
         return rentalService.getRentalById(id);
     }
 
-    @Operation(summary = "Update rental by ID", description = "Updates the information of a specific rental by its ID.")
+    @Operation(summary = "Update rental by ID", description = "Updates the information of a specific rental by its ID.",
+            security = { @SecurityRequirement(name = "Bearer Authentication") })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Rental updated successfully", content = @Content(schema = @Schema(implementation = RentalResponse.class))),
             @ApiResponse(responseCode = "404", description = "Rental not found")
     })
     @PutMapping(value = "/rentals/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public RentalResponse updateRental(@PathVariable Integer id, @RequestBody RentalRequest rentalRequest) throws AccessDeniedException {
+    public RentalResponse updateRental(@PathVariable Integer id, @ModelAttribute RentalRequest rentalRequest) throws AccessDeniedException {
         try {
             return rentalService.updateRental(id, rentalRequest);
         } catch (AccessDeniedException e) {
@@ -94,4 +99,5 @@ public class RentalController {
             throw new RuntimeException(e.getMessage());
         }
     }
+
 }

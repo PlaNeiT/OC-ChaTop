@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,8 @@ public class UserController {
      * @param id the ID of the user to retrieve
      * @return a response entity containing the user details if found, or a 404 status if not found
      */
-    @Operation(summary = "Get user by ID", description = "Fetches information about a user by their ID.")
+    @Operation(summary = "Get user by ID", description = "Fetches information about a user by their ID.",
+            security = { @SecurityRequirement(name = "Bearer Authentication") })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User found",
                     content = @Content(schema = @Schema(implementation = UserResponse.class))),
