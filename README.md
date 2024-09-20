@@ -163,8 +163,4 @@ Use the provided Postman collection to test the API endpoints. Import the collec
 
 - **Database Connection Issues**: Check the `application.properties` file to ensure the correct MySQL credentials are provided.
 - **AWS S3 Issues**: Ensure that your AWS credentials are correct and the bucket exists in the specified region.
-- **JWT Expiration**: Make sure the JWT secret is secure and correctly configured. To generate a secure JWT secret easily, you can use the following command:
-
-  ```bash
-  openssl rand -base64 32
-```
+- **JWT Expiration**: Make sure the JWT secret is secure and correctly configured.
